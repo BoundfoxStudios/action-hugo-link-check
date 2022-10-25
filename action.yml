@@ -1,0 +1,67 @@
+name: Hugo Check for broken links
+description: Checks a Hugo site for broken links
+inputs:
+  fail-on-broken-links:
+    required: false
+    default: '1'
+    description: The number of required broken links to fail the action. Set to 0 to deactivate. Defaults to 1.
+  honor-robot-exclusions:
+    required: false
+    default: 'false'
+    description: Whether to honor or not robots.txt file, if present on the scanned webpage
+  log-skipped-links:
+    required: false
+    default: 'false'
+    description: Logs skipped links and sends them to skipped-links output
+  excluded-schemes:
+    required: false
+    default: ''
+    description: Comma-separated list of schemes to exclude
+  exclude-external-links:
+    required: false
+    default: 'false'
+    description: Whether to exclude external links or not
+  exclude-internal-links:
+    required: false
+    default: 'false'
+    description: Whether to exclude internal links or not
+  exclude-links-to-same-page:
+    required: false
+    default: 'false'
+    description: Whether to exclude links to the same page or not
+  hugo-root:
+    required: true
+    description: Base path to your hugo project.
+    default: ./
+  hugo-content-dir:
+    required: true
+    description: Base path to your hugo content directory.
+    default: ./content
+  hugo-config:
+    required: true
+    description: Base path to your hugo config.
+    default: ./config.yaml
+  hugo-startup-wait-time:
+    required: true
+    default: '20'
+    description: Maximum time to wait for hugo to start up and process your project.
+outputs:
+  broken-links-count:
+    description: The number of broken links found
+  broken-links:
+    description: JSON array of broken links
+runs:
+  using: docker
+  image: Dockerfile
+  env:
+    HUGO_ROOT: ${{ inputs.hugo-root }}
+    HUGO_CONTENT_DIR: ${{ inputs.hugo-content-dir }}
+    HUGO_CONFIG: ${{ inputs.hugo-config }}
+    HUGO_STARTUP_WAIT_TIME: ${{ inputs.hugo-startup-wait-time }}
+    FAIL_ON_BROKEN_LINKS: ${{ inputs.fail-on-broken-links }}
+    HONOR_ROBOT_EXCLUSIONS: ${{ inputs.honor-robot-exclusions }}
+    LOG_SKIPPED_LINKS: ${{ inputs.log-skipped-links }}
+    EXCLUDED_SCHEMES: ${{ inputs.excluded-schemes }}
+    EXCLUDE_EXTERNAL_LINKS: ${{ inputs.exclude-external-links }}
+    EXCLUDE_INTERNAL_LINKS: ${{ inputs.exclude-internal-links }}
+    EXCLUDE_LINKS_TO_SAME_PAGE: ${{ inputs.exclude-links-to-same-page }}

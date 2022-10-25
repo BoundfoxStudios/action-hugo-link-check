@@ -1,0 +1,15 @@
+{
+  "name": "test-site",
+  "version": "1.0.0",
+  "description": "Test-Site for action-hugo-link-check",
+  "private": true,
+  "scripts": {
+	  "start": "hugo server --navigateToChanged"
+  },
+  "hugo-bin": {
+    "buildTags": "extended"
+  },
+  "devDependencies": {
+    "hugo-bin": "0.92.3"
+  }
+}

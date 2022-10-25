@@ -1,0 +1,48 @@
+name: Tests
+
+on:
+  - push
+
+jobs:
+  test-one-broken-link:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        continue-on-error: true
+        with:
+          hugo-root: test-site
+          hugo-content-dir: test-site/content
+          hugo-config: test-site/config
+        id: link-check
+      - run: |
+          COUNT="${{ steps.link-check.outputs.broken-links-count }}"
+
+          if [[ "$COUNT" -eq 1 ]]; then
+            exit 0
+          else
+            echo "expected one link to be broken"
+            exit 1
+          fi
+
+  test-one-broken-link-but-with-fail-on-broken-links-turned-off:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          fail-on-broken-links: 0
+          hugo-root: test-site
+          hugo-content-dir: test-site/content
+          hugo-config: test-site/config
+
+  test-one-broken-but-with-fail-on-broken-links-set-to-a-value-higher-than-one:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          fail-on-broken-links: 10
+          hugo-root: test-site
+          hugo-content-dir: test-site/content
+          hugo-config: test-site/config
