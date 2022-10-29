@@ -1,5 +1,9 @@
 name: Hugo Check for broken links
 description: Checks a Hugo site for broken links
+branding:
+  color: red
+  icon: external-link
+
 inputs:
   fail-on-broken-links:
     required: false
