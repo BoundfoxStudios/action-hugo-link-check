@@ -33,6 +33,10 @@ inputs:
     required: false
     default: 'false'
     description: Whether to exclude links to the same page or not
+  user-agent:
+    required: false
+    default: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15'
+    description: The user-agent to use for the request
   hugo-root:
     required: true
     description: Base path to your hugo project.
@@ -69,3 +73,4 @@ runs:
     EXCLUDE_EXTERNAL_LINKS: ${{ inputs.exclude-external-links }}
     EXCLUDE_INTERNAL_LINKS: ${{ inputs.exclude-internal-links }}
     EXCLUDE_LINKS_TO_SAME_PAGE: ${{ inputs.exclude-links-to-same-page }}
+    USER_AGENT: ${{ inputs.user-agent }}

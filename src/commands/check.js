@@ -49,6 +49,12 @@ export const checkCommand = {
       type: 'boolean',
       describe: 'Whether to exclude links to the same page or not',
     },
+    userAgent: {
+      required: false,
+      default: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15',
+      type: 'string',
+      describe: 'The user-agent to use for making the request',
+    },
   },
   handler: async ({
                     url,
@@ -59,6 +65,7 @@ export const checkCommand = {
                     excludeExternalLinks,
                     excludeInternalLinks,
                     excludeLinksToSamePage,
+                    userAgent,
                   }) => {
     const linkChecker = new LinkChecker({
       url,
@@ -67,6 +74,7 @@ export const checkCommand = {
       excludeExternalLinks,
       excludeInternalLinks,
       excludeLinksToSamePage,
+      userAgent,
     });
     let brokenLinks = [];
     let skippedLinks = [];
