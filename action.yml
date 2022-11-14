@@ -37,6 +37,10 @@ inputs:
     required: false
     default: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15'
     description: The user-agent to use for the request
+  rate-limit:
+    required: false
+    default: '0'
+    description: The number of milliseconds to wait before each request
   hugo-root:
     required: true
     description: Base path to your hugo project.

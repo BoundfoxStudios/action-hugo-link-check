@@ -19,11 +19,11 @@ All inputs are optional.
 | `exclude-external-links`     | Whether to exclude external links or not                                       | `false`         |
 | `exclude-internal-links`     | Whether to exclude internal links or not                                       | `false`         |
 | `exclude-links-to-same-page` | Whether to exclude links to the same page or not                               | `false`         |
+| `rate-limit`                 | The number of milliseconds to wait before each request                         | `0`             |
 | `hugo-root`                  | Base path to your hugo project                                                 | `./`            |
 | `hugo-content-dir`           | Base path to your hugo content directory                                       | `./content`     |
 | `hugo-config`                | Base path to your hugo config                                                  | `./config.yaml` |
 | `hugo-startup-wait-time`     | Maximum time to wait for hugo to start up and process your project             | `20`            |
-
 
 ### Outputs
 

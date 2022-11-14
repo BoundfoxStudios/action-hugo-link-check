@@ -55,6 +55,12 @@ export const checkCommand = {
       type: 'string',
       describe: 'The user-agent to use for making the request',
     },
+    rateLimit: {
+      required: false,
+      default: 0,
+      type: 'number',
+      describe: 'The number of milliseconds to wait before each request'
+    }
   },
   handler: async ({
                     url,
@@ -66,6 +72,7 @@ export const checkCommand = {
                     excludeInternalLinks,
                     excludeLinksToSamePage,
                     userAgent,
+                    rateLimit
                   }) => {
     const linkChecker = new LinkChecker({
       url,
@@ -75,6 +82,7 @@ export const checkCommand = {
       excludeInternalLinks,
       excludeLinksToSamePage,
       userAgent,
+      rateLimit
     });
     let brokenLinks = [];
     let skippedLinks = [];
