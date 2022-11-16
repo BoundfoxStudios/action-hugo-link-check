@@ -47,12 +47,18 @@ export const checkCommand = {
                     timeout,
                     skip,
                   }) => {
-    const linkChecker = new LinkChecker({
+
+    const options = {
       path: url,
       retry,
       timeout,
       linksToSkip: skip.split(/[\s,]+/).filter(x => !!x), // same as in linkinator-cli
-    });
+    };
+
+    core.info('Settings used for linkinator:');
+    core.info(JSON.stringify(options, null, 2));
+
+    const linkChecker = new LinkChecker(options);
     let checkedLinks = 0;
 
     linkChecker.events$.on(LinkEvent, () => {
