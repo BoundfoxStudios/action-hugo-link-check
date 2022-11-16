@@ -25,20 +25,6 @@ if [[ "$TIMEOUT_RESULT" -eq 124 ]]; then
   exit 1
 fi
 
-echo "INPUTS --------------------------"
-echo "$HUGO_ROOT"
-echo "$HUGO_CONTENT_DIR"
-echo "$HUGO_CONFIG"
-echo "$HUGO_STARTUP_WAIT_TIME"
-echo "$FAIL_ON_BROKEN_LINKS"
-echo "$HONOR_ROBOT_EXCLUSIONS"
-echo "$LOG_SKIPPED_LINKS"
-echo "$EXCLUDED_SCHEMES"
-echo "$EXCLUDE_EXTERNAL_LINKS"
-echo "$EXCLUDE_INTERNAL_LINKS"
-echo "$EXCLUDE_LINKS_TO_SAME_PAGE"
-echo "/INPUTS --------------------------"
-
 COMMAND="node /action/src/main.js check --url http://localhost:1313"
 
 OUTPUT=$($COMMAND)

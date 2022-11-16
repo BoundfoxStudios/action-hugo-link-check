@@ -10,20 +10,17 @@ See a running example [here](https://github.com/BoundfoxStudios/community-projec
 
 All inputs are optional.
 
-| Input                        | Description                                                                    | Default         |
-|------------------------------|--------------------------------------------------------------------------------|-----------------|
-| `fail-on-broken-links`       | The number of required broken links to fail the action. Set to 0 to deactivate | `1`             |
-| `honor-robot-exclusions`     | Whether to honor or not robots.txt file, if present on the scanned webpage     | `false`         |
-| `log-skipped-links`          | Logs skipped links and sends them to skipped-links output                      | `false`         |
-| `excluded-schemes`           | Comma-separated list of schemes to exclude                                     | ``              |
-| `exclude-external-links`     | Whether to exclude external links or not                                       | `false`         |
-| `exclude-internal-links`     | Whether to exclude internal links or not                                       | `false`         |
-| `exclude-links-to-same-page` | Whether to exclude links to the same page or not                               | `false`         |
-| `rate-limit`                 | The number of milliseconds to wait before each request                         | `0`             |
-| `hugo-root`                  | Base path to your hugo project                                                 | `./`            |
-| `hugo-content-dir`           | Base path to your hugo content directory                                       | `./content`     |
-| `hugo-config`                | Base path to your hugo config                                                  | `./config.yaml` |
-| `hugo-startup-wait-time`     | Maximum time to wait for hugo to start up and process your project             | `20`            |
+| Input                    | Description                                                                                    | Default         |
+|--------------------------|------------------------------------------------------------------------------------------------|-----------------|
+| `fail-on-broken-links`   | The number of required broken links to fail the action. Set to 0 to deactivate                 | `1`             |
+| `log-skipped-links`      | Logs skipped links and sends them to skipped-links output                                      | `false`         |
+| `retry`                  | Automatically retry requests that return HTTP 429 responses and include a 'retry-after' header | `true`          |
+| `timeout`                | Request timeout in ms. Set to 0 for no timeout                                                 | `5000`          |
+| `skip`                   | List of urls in regexy form to not include in the check                                        | ``              |
+| `hugo-root`              | Base path to your hugo project                                                                 | `./`            |
+| `hugo-content-dir`       | Base path to your hugo content directory                                                       | `./content`     |
+| `hugo-config`            | Base path to your hugo config                                                                  | `./config.yaml` |
+| `hugo-startup-wait-time` | Maximum time to wait for hugo to start up and process your project                             | `20`            |
 
 ### Outputs
 
@@ -54,3 +51,11 @@ jobs:
           hugo-content-dir: docs/content
           hugo-config: docs/config.yaml
 ```
+
+## Remarks
+
+### Upgrade from v1 to v2
+
+If you're upgrading from v1 to v2 the underlying link check library changed from [broken-link-checker](https://www.npmjs.com/package/broken-link-checker) to [linkinator](https://www.npmjs.com/package/linkinator).
+With that, all available non hugo-based options have changed from v1 to v2. 
+Please consult the docs for the current options to use with this action.

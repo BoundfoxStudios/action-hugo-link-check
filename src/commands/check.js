@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import { JunkEvent, LinkChecker, LinkEvent } from './link-checker.js';
+import { LinkChecker, LinkEvent } from './link-checker.js';
 
 export const checkCommand = {
   command: 'check',
@@ -14,107 +14,66 @@ export const checkCommand = {
       type: 'number',
       describe: 'The number of required broken links to fail the action. Set to 0 to deactivate',
     },
-    honorRobotExclusions: {
-      required: false,
-      default: true,
-      type: 'boolean',
-      describe: 'Whether to honor or not robots.txt file, if present on the scanned webpage',
-    },
     logSkippedLinks: {
       required: false,
       default: false,
       type: 'boolean',
       describe: 'Logs skipped links and sends them to skipped-links output',
     },
-    excludedSchemes: {
+    retry: {
+      required: false,
+      default: true,
+      type: 'boolean',
+      describe: 'Automatically retry requests that return HTTP 429 responses and include a \'retry-after\' header',
+    },
+    timeout: {
+      required: false,
+      default: 5000,
+      type: 'number',
+      describe: 'Request timeout in ms. Set to 0 for no timeout',
+    },
+    skip: {
       required: false,
       default: '',
-      describe: 'Comma-separated list of schemes to exclude',
-    },
-    excludeExternalLinks: {
-      required: false,
-      default: false,
-      type: 'boolean',
-      describe: 'Whether to exclude external links or not',
-    },
-    excludeInternalLinks: {
-      required: false,
-      default: false,
-      type: 'boolean',
-      describe: 'Whether to exclude internal links or not',
-    },
-    excludeLinksToSamePage: {
-      required: false,
-      default: false,
-      type: 'boolean',
-      describe: 'Whether to exclude links to the same page or not',
-    },
-    userAgent: {
-      required: false,
-      default: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15',
       type: 'string',
-      describe: 'The user-agent to use for making the request',
+      describe: 'List of urls in regexy form to not include in the check',
     },
-    rateLimit: {
-      required: false,
-      default: 0,
-      type: 'number',
-      describe: 'The number of milliseconds to wait before each request'
-    }
   },
   handler: async ({
                     url,
                     failOnBrokenLinks,
-                    honorRobotExclusions,
                     logSkippedLinks,
-                    excludedSchemes,
-                    excludeExternalLinks,
-                    excludeInternalLinks,
-                    excludeLinksToSamePage,
-                    userAgent,
-                    rateLimit
+                    retry,
+                    timeout,
+                    skip,
                   }) => {
     const linkChecker = new LinkChecker({
-      url,
-      honorRobotExclusions,
-      excludedSchemes: excludedSchemes.split(','),
-      excludeExternalLinks,
-      excludeInternalLinks,
-      excludeLinksToSamePage,
-      userAgent,
-      rateLimit
+      path: url,
+      retry,
+      timeout,
+      linksToSkip: skip.split(/[\s,]+/).filter(x => !!x), // same as in linkinator-cli
     });
-    let brokenLinks = [];
-    let skippedLinks = [];
     let checkedLinks = 0;
 
-    linkChecker.events$.on(LinkEvent, link => {
+    linkChecker.events$.on(LinkEvent, () => {
       checkedLinks++;
-
-      if (link.broken) {
-        brokenLinks.push(link);
-      }
 
       if (checkedLinks % 100 === 0) {
         core.info(`Checked ${checkedLinks} links so far...`);
       }
     });
 
-    linkChecker.events$.on(JunkEvent, link => {
-      // we don't care about HTML exclusions due to filterLevel 1
-      if (link.excluded && link.excludedReason !== 'BLC_HTML') {
-        skippedLinks.push(link);
-      }
-    });
-
     const startTime = Date.now();
     core.info(`Starting to check ${url}`);
-    await linkChecker.run();
+    const links = await linkChecker.run();
 
     const endTime = Date.now();
     const difference = endTime - startTime;
     const elapsedTime = new Date(difference);
-    core.info(`Checking ${checkedLinks} links took ${elapsedTime.getMinutes()}.${elapsedTime.getMilliseconds()} minutes`);
+    core.info(`Checking ${links.length} links took ${elapsedTime.getMinutes()}.${elapsedTime.getMilliseconds()} minutes`);
+
+    const skippedLinks = links.filter(link => link.state === 'SKIPPED');
+    const brokenLinks = links.filter(link => link.state === 'BROKEN');
 
     possiblyOutputSkippedLinks(skippedLinks, logSkippedLinks);
     outputBrokenLinks(brokenLinks);
@@ -123,12 +82,12 @@ export const checkCommand = {
 };
 
 function logLink(link) {
-  core.info(`  ${link.url.resolved || link.url.original}${link.base ? ` (from ${link.base.resolved})` : ''} -- reason: ${link.brokenReason || link.excludedReason}`);
+  core.info(`  ${link.url}${link.parent ? ` (from ${link.parent})` : ''} -- reason: ${link.state}${link.status ? `http status: ${link.status}` : ''}`);
 }
 
 function setOutputs(name, links) {
   core.setOutput(`${name}-count`, links.length);
-  core.setOutput(name, JSON.stringify(links.map(link => link.url.resolved || link.url.original)));
+  core.setOutput(name, JSON.stringify(links.map(link => link.url)));
 }
 
 function possiblyOutputSkippedLinks(skippedLinks, logSkippedLinks) {

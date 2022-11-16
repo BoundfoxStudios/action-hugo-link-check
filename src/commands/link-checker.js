@@ -1,35 +1,23 @@
 import { EventEmitter } from 'node:events';
-import blc from 'broken-link-checker';
+import { LinkChecker as Linkinator } from 'linkinator';
 
 export const LinkEvent = Symbol('link');
-export const JunkEvent = Symbol('junk');
-export const EndEvent = Symbol('end');
 
 export class LinkChecker {
   events$ = new EventEmitter();
-  #url;
+  #options;
   #siteChecker;
 
   constructor(options) {
-    const defaultOptions = {
-      maxSocketsPerHost: 20
-    }
+    this.#options = options;
+    this.#siteChecker = new Linkinator();
 
-    options = Object.assign({}, defaultOptions, options);
-
-    this.#url = options.url;
-
-    this.#siteChecker = new blc.SiteChecker(options, {
-      link: (result) => this.events$.emit(LinkEvent, result),
-      junk: (result) => this.events$.emit(JunkEvent, result),
-      end: () => this.events$.emit(EndEvent),
-    });
+    this.#siteChecker.on('link', link => this.events$.emit(LinkEvent, link));
   }
 
-  run() {
-    return new Promise(resolve => {
-      this.events$.once(EndEvent, () => resolve());
-      this.#siteChecker.enqueue(this.#url);
-    });
+  async run() {
+    const result = await this.#siteChecker.check({...this.#options, recurse: true });
+
+    return result.links;
   }
 }

@@ -10,7 +10,7 @@
   "dependencies": {
     "@actions/core": "~1.10.0",
     "@actions/github": "~5.1.1",
-    "broken-link-checker": "~0.7.8",
+    "linkinator": "~4.1.1",
     "yargs": "~17.6.0"
   },
   "devDependencies": {
