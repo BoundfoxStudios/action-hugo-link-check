@@ -82,7 +82,7 @@ export const checkCommand = {
 };
 
 function logLink(link) {
-  core.info(`  ${link.url}${link.parent ? ` (from ${link.parent})` : ''} -- reason: ${link.state}${link.status ? `http status: ${link.status}` : ''}`);
+  core.info(`  ${link.url}${link.parent ? ` (from ${link.parent})` : ''} -- reason: ${link.state}${link.status ? ` http status: ${link.status}` : ''}`);
 }
 
 function setOutputs(name, links) {
