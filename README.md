@@ -31,6 +31,29 @@ All inputs are optional.
 | `skipped-links-count` | Count of skipped links        | 
 | `skipped-links`       | JSON-Array with skipped links |
 
+### Mandatory: package.json
+
+To easily support multiple versions of Hugo, you need to have a `package.json` in your `hugo-root`.
+In that `package.json` you need a `devDependency` to `hugo-bin` specifying the hugo version to use for your project.
+See an example [here](https://github.com/BoundfoxStudios/fairy-tale-defender/blob/develop/docs/package.json).
+
+Minimal example:
+
+```json
+{
+  "name": "hugo",
+  "private": true,
+  "hugo-bin": {
+    "buildTags": "extended"
+  },
+  "devDependencies": {
+    "hugo-bin": "0.92.3"
+  }
+}
+```
+
+> If you have another idea how to easily support multiple hugo version, please let me know!
+
 ### Example
 
 ```yaml
