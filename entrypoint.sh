@@ -3,7 +3,7 @@
 pushd "$GITHUB_WORKSPACE/$HUGO_ROOT"
 
 npm ci
-npx hugo serve --baseUrl "http://localhost:1313" --contentDir "$GITHUB_WORKSPACE/$HUGO_CONTENT_DIR" --config "$GITHUB_WORKSPACE/$HUGO_CONFIG" &
+npx hugo serve --baseURL "http://localhost:1313" --contentDir "$GITHUB_WORKSPACE/$HUGO_CONTENT_DIR" --config "$GITHUB_WORKSPACE/$HUGO_CONFIG" &
 HUGO_PID=$!
 
 popd
