@@ -68,7 +68,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: BoundfoxStudios/action-hugo-link-check@v1
+      - uses: BoundfoxStudios/action-hugo-link-check@v2
         with:
           hugo-root: docs
           hugo-content-dir: docs/content
